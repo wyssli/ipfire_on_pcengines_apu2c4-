@@ -5,7 +5,7 @@ This Guide is under GPL3 license, see [LICENSE](/LICENSE)
 
 ## Introduction
 
-In this tutorial i will describe all steps I took to get IPFire running on my PCEngins apu2c4  
+In this tutorial I will describe all steps I took to get IPFire running on my PCEngins apu2c4  
 It will include:
 - SSH with Public Key Authentication
 - SMB (Samba/CIFS/Windows share)
@@ -212,8 +212,8 @@ So let's try the USB way:
 - choose "Assigned Cards", asign GREEN RED ORANGE to topmost interface, assign blue to Wireless
 - choose " Address settings"
   - assign GREEN  to 192.168.xxx.1 (with xxx any number 1 to 128) Networkmask 255.255.255.0
-  - assign BLUE   to 192.168.xxx.1 (with xxx any different number 1 to 128) Networkmask 255.255.255.0
-  - assign ORANGE to 192.168.xxx.1 (with xxx any different number 1 to 128) Networkmask 255.255.255.0
+  - assign BLUE   to 192.168.yyy.1 (with yyy any different number 1 to 128) Networkmask 255.255.255.0
+  - assign ORANGE to 192.168.zzz.1 (with zzz any different number 1 to 128) Networkmask 255.255.255.0
   - set RED to DHCP, `ipfire`
 - continue with DONE (youmust not set "Gateway settings")
 - enable DHCP 
@@ -239,27 +239,8 @@ So let's try the USB way:
 - Make sure RED is connected (System/Home)
 - Yeeeehaw it's working
 
-# SSH with Public Key Authentication
-# SMB (Samba/CIFS/Windows share)
-# Transmission (a BitTorrent Client running 24/7 which helps to shar Linux ISO Images etc.)
-# MC (midnight commander)
-# External Harddisk (ext4) for SMB/Transmission
-# Automatic Backup on a second harddisk (NTFS) as soon as it gets connected (low tech version)
-# dyndns (zoneedit)
-# IPsec and/or OpenVPN
-
-
-
-# other notes
-
-
-
-
-
-
-
-# other notes
-installed packages
+# Installation of additional packages
+from the webinterface (IPFire/Packfire) install the following packages
 ```
 - avahi
 - cups-filters
@@ -278,3 +259,53 @@ installed packages
 - samba
 - transmission
 ```
+
+# SSH with Public Key Authentication
+Generate the key with PUTTYGEN.EXE (RSA 4096) store with passphrase. Copy the public key (topmost field starting with "ssh-rsa")
+With putty (over COM port) 
+```
+mkdir .ssh
+printf "ssh-rsa __your public key__" > authorized_keys
+```
+in the webinterface (System/SSH Access) enable "SSH Access" and "Allow public key based authentication", disable all others and save.
+-> done
+
+Try to connect with putty, new session:
+connection type:ssh
+hostename:ipfire 
+port :222
+in Connection/SSH/Auth: select your private key
+possible use lucida console as font
+
+# MC (midnight commander)
+for fixing mc lines do the following: `vim .bashrc` add `export NCURSES_NO_UTF8_ACS=1 ` and ESC :wq to store.
+
+# External Harddisk (ext4) for SMB/Transmission
+plugin an external HD (ext4 formated) Remark: use ext4 format for performance
+in the webinterface (Services/ExternalHD) 
+- you should see the disk (probably as `/dev/sdb`)
+- choose ext4 from the dropdown and mount it as `/mnt/external`
+- it should now appear on otp in green.
+- check with mc if it is there
+
+# Transmission (a BitTorrent Client running 24/7 which helps to shar Linux ISO Images etc.)
+in the webinterface (IPFire/Samba) add your users 
+
+# SMB (Samba/CIFS/Windows share)
+in the webinterface (IPFire/Samba) add your users 
+
+# Automatic Backup on a second harddisk (NTFS) as soon as it gets connected (low tech version)
+
+# dyndns (zoneedit)
+
+# IPsec and/or OpenVPN
+
+# other notes
+
+
+
+
+
+
+
+# other notes
