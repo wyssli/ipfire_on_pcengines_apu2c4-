@@ -285,11 +285,55 @@ plugin an external HD (ext4 formated) Remark: use ext4 format for performance
 in the webinterface (Services/ExternalHD) 
 - you should see the disk (probably as `/dev/sdb`)
 - choose ext4 from the dropdown and mount it as `/mnt/external`
-- it should now appear on otp in green.
+- it should now appear in the top section in green.
 - check with mc if it is there
 
 # Transmission (a BitTorrent Client running 24/7 which helps to shar Linux ISO Images etc.)
-in the webinterface (IPFire/Samba) add your users 
+We already installed the transmission package now we have to configure it.
+- in the webinterface (Status/Services) in the second section (Addon - Services) Transmission should have status "Running".
+- Transmisssion Webinterface is running on port 9091
+- in ssh do `/etc/init.d/transmission stop`
+- edit the following lines in `/etc/transmission-daemon/settings.json`
+```
+    "alt-speed-down": 2500,
+    "alt-speed-enabled": true,
+    "alt-speed-time-begin": 420,
+    "alt-speed-time-day": 127,
+    "alt-speed-time-enabled": true,
+    "alt-speed-time-end": 1380,
+    "alt-speed-up": 400,
+
+    "blocklist-enabled": true,
+    "blocklist-url": "http://list.iblocklist.com/lists/bluetack/level-1",
+    "download-dir": "/mnt/external/data/transmission/complete",
+    "download-queue-enabled": true,
+    "download-queue-size": 20,
+
+    "idle-seeding-limit-enabled": true,
+    "incomplete-dir": "/mnt/external/data/transmission/_incomplete",
+
+    "open-file-limit": 50,
+
+    "peer-limit-per-torrent": 30,
+
+    "ratio-limit-enabled": true,
+    
+    "rpc-authentication-required": true,
+
+    "rpc-password": "your_password_in_plaintext_will_be_hashed",
+    "rpc-username": "raudi",
+
+    "speed-limit-down": 10000,
+    
+    "speed-limit-up": 1000,
+    
+    "start-added-torrents": false,
+
+    "umask": 2,
+```
+- don't worry, the password is being overwritten with a hash once you log in
+- in ssh do `/etc/init.d/transmission start`
+- in webinterface (Firewall/Firewall Rules) add a new rule
 
 # SMB (Samba/CIFS/Windows share)
 in the webinterface (IPFire/Samba) add your users 
